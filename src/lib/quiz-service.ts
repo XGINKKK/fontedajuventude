@@ -1,17 +1,20 @@
 import { supabase } from './supabase'
 import { QuizAnswers } from './quiz-context'
+import { Database } from './database.types'
 
 export async function saveLead(answers: QuizAnswers): Promise<{ id: string } | null> {
     try {
         // 1. Salvar Lead
+        const leadData: Database['public']['Tables']['leads']['Insert'] = {
+            nome: answers.name,
+            whatsapp: answers.whatsapp,
+            origem: 'quiz',
+            dispositivo: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
+        }
+
         const { data: lead, error: leadError } = await supabase
             .from('leads')
-            .insert({
-                nome: answers.name,
-                whatsapp: answers.whatsapp,
-                origem: 'quiz', // Pode vir de UTMs depois
-                dispositivo: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
-            })
+            .insert(leadData)
             .select()
             .single()
 
