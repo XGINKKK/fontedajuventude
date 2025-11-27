@@ -3,6 +3,7 @@
 import { QuizProvider, useQuiz } from "@/lib/quiz-context";
 import { QuizLayout } from "@/components/quiz/quiz-layout";
 import { StepAge } from "@/components/quiz/steps/step-age";
+import { StepWelcome } from "@/components/quiz/steps/step-welcome";
 import { StepMetabolism } from "@/components/quiz/steps/step-metabolism"; // New
 import { StepGoal } from "@/components/quiz/steps/step-goal";
 import { StepProblemArea }
@@ -24,21 +25,22 @@ function QuizContent() {
 
   return (
     <QuizLayout>
-      {step === 1 && <StepAge />}
-      {step === 2 && <StepMetabolism />}
-      {step === 3 && <StepGoal />}
-      {step === 4 && <StepProblemArea />}
-      {step === 5 && <StepSymptoms />}
-      {step === 6 && <StepStress />}
-      {step === 7 && <StepSkin />}
-      {step === 8 && <StepPreviousAttempts />}
-      {step === 9 && <StepExercise />}
-      {step === 10 && <StepPain />}
-      {step === 11 && <StepTime />}
-      {step === 12 && <StepTransition />}
-      {step === 13 && <StepHeight />}
-      {step === 14 && <StepWeight />}
-      {step === 15 && <StepResult />}
+      {step === 1 && <StepWelcome />}
+      {step === 2 && <StepAge />}
+      {step === 3 && <StepMetabolism />}
+      {step === 4 && <StepGoal />}
+      {step === 5 && <StepProblemArea />}
+      {step === 6 && <StepSymptoms />}
+      {step === 7 && <StepStress />}
+      {step === 8 && <StepSkin />}
+      {step === 9 && <StepPreviousAttempts />}
+      {step === 10 && <StepExercise />}
+      {step === 11 && <StepPain />}
+      {step === 12 && <StepTime />}
+      {step === 13 && <StepTransition />}
+      {step === 14 && <StepHeight />}
+      {step === 15 && <StepWeight />}
+      {step === 16 && <StepResult />}
     </QuizLayout>
   );
 }

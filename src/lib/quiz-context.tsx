@@ -47,7 +47,7 @@ interface QuizContextType {
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined);
 
-const TOTAL_STEPS = 15;
+const TOTAL_STEPS = 16;
 
 export function QuizProvider({ children }: { children: ReactNode }) {
     const [step, setStep] = useState(1);
