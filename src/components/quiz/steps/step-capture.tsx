@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Lock } from "lucide-react";
+import { saveLead } from "@/lib/quiz-service";
 
 export function StepCapture() {
     const { setAnswer, nextStep, answers } = useQuiz();
@@ -32,10 +33,21 @@ export function StepCapture() {
     const handleNext = async () => {
         if (name && whatsapp.length >= 14) {
             setIsSubmitting(true);
-            // Simulate a small delay for better UX
-            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Atualizar contexto primeiro para ter os dados completos
             setAnswer("name", name);
             setAnswer("whatsapp", whatsapp);
+
+            // Preparar objeto de respostas completo
+            const fullAnswers = { ...answers, name, whatsapp };
+
+            // Salvar no Supabase
+            const lead = await saveLead(fullAnswers);
+
+            if (lead) {
+                localStorage.setItem("currentLeadId", lead.id);
+            }
+
             nextStep();
         }
     };

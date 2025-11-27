@@ -13,6 +13,7 @@ const SalesPage = dynamic(() => import("@/components/sales/sales-page").then(mod
 });
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { saveQuizResult } from "@/lib/quiz-service";
 
 export function StepResult() {
     const { calculateBiologicalAge, answers } = useQuiz();
@@ -21,10 +22,16 @@ export function StepResult() {
     const [showSales, setShowSales] = useState(false);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
+        const timer = setTimeout(async () => {
             try {
                 const res = calculateBiologicalAge();
                 setResult(res);
+
+                // Salvar resultado no Supabase se tivermos um leadId
+                const leadId = localStorage.getItem("currentLeadId");
+                if (leadId && res) {
+                    await saveQuizResult(leadId, res);
+                }
             } catch (error) {
                 console.error("Error calculating age:", error);
             } finally {
