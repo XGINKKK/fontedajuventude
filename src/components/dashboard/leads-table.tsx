@@ -70,9 +70,9 @@ export function LeadsTable({
             case 'all':
                 return null
             default:
-                const defaultRange = new Date(today)
-                defaultRange.setDate(defaultRange.getDate() - 7)
-                return { start: defaultRange, end: now }
+                const defaultDate = new Date(today)
+                defaultDate.setDate(defaultDate.getDate() - 7)
+                return { start: defaultDate, end: now }
         }
     }
 
@@ -395,8 +395,8 @@ export function LeadsTable({
                                         key={i}
                                         onClick={() => setCurrentPage(i + 1)}
                                         className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${currentPage === i + 1
-                                                ? 'bg-emerald-500 text-white'
-                                                : 'border border-zinc-200 hover:bg-zinc-50'
+                                            ? 'bg-emerald-500 text-white'
+                                            : 'border border-zinc-200 hover:bg-zinc-50'
                                             }`}
                                     >
                                         {i + 1}

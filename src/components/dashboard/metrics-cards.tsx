@@ -68,7 +68,9 @@ export function MetricsCards({
             case 'all':
                 return null
             default:
-                return { start: sevenDays, end: now }
+                const defaultDate = new Date(today)
+                defaultDate.setDate(defaultDate.getDate() - 7)
+                return { start: defaultDate, end: now }
         }
     }
 
