@@ -12,9 +12,10 @@ export async function saveLead(answers: QuizAnswers): Promise<{ id: string } | n
             dispositivo: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
         }
 
-        const { data: leadRaw, error: leadError } = await supabase
-            .from('leads')
-            .insert(leadData as any)
+        // Cast explícito no chain do Supabase para evitar erro 'never'
+        const { data: leadRaw, error: leadError } = await (supabase
+            .from('leads') as any)
+            .insert(leadData)
             .select()
             .single()
 
@@ -23,8 +24,8 @@ export async function saveLead(answers: QuizAnswers): Promise<{ id: string } | n
         const lead = leadRaw as { id: string };
 
         // 2. Salvar Respostas do Quiz
-        const { error: answersError } = await supabase
-            .from('quiz_respostas')
+        const { error: answersError } = await (supabase
+            .from('quiz_respostas') as any)
             .insert({
                 lead_id: lead.id,
                 idade_faixa: answers.ageRange,
@@ -37,14 +38,14 @@ export async function saveLead(answers: QuizAnswers): Promise<{ id: string } | n
                 altura_cm: parseFloat(answers.height.replace(',', '.')),
                 peso_kg: parseFloat(answers.weight.replace(',', '.')),
                 pergunta_compromisso: answers.commitment
-            } as any)
+            })
 
         if (answersError) throw answersError
 
         // 3. Inicializar Funil (Step 11 - Capture é onde salvamos o lead, mas ele já passou pelos outros)
         // Vamos marcar todos os steps anteriores como concluídos
         const now = new Date().toISOString()
-        await supabase.from('funil_etapas').insert({
+        await (supabase.from('funil_etapas') as any).insert({
             lead_id: lead.id,
             session_id: `session_${lead.id}`, // Identificador simples
             etapa_atual: 'step_11', // Capture
@@ -59,9 +60,9 @@ export async function saveLead(answers: QuizAnswers): Promise<{ id: string } | n
             step_9_em: now,
             step_10_em: now,
             step_11_em: now,
-        } as any)
+        })
 
-        return lead as { id: string }
+        return lead
     } catch (error) {
         console.error('Erro ao salvar lead:', error)
         return null
@@ -70,8 +71,8 @@ export async function saveLead(answers: QuizAnswers): Promise<{ id: string } | n
 
 export async function saveQuizResult(leadId: string, result: any) {
     try {
-        const { error } = await supabase
-            .from('quiz_resultados')
+        const { error } = await (supabase
+            .from('quiz_resultados') as any)
             .insert({
                 lead_id: leadId,
                 imc: result.bmi,
@@ -80,17 +81,17 @@ export async function saveQuizResult(leadId: string, result: any) {
                 idade_biologica: result.bioAge,
                 diferenca_idade: result.ageDiff,
                 quantidade_sintomas: 0 // Precisaria passar isso no result
-            } as any)
+            })
 
         if (error) throw error
 
         // Atualizar funil para etapa de resultado
-        await supabase
-            .from('funil_etapas')
+        await (supabase
+            .from('funil_etapas') as any)
             .update({
                 resultado_em: new Date().toISOString(),
                 etapa_atual: 'resultado'
-            } as any)
+            })
             .eq('lead_id', leadId)
 
         return true
