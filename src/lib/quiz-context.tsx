@@ -12,8 +12,8 @@ export type ProblemArea = "belly" | "arms" | "legs" | "face";
 export type Commitment = "yes" | "maybe" | "no";
 export type ExerciseFreq = "0" | "1-2" | "3-4" | "5+";
 export type Metabolism = "slow" | "normal" | "fast";
-export type PainArea = "knees" | "back" | "neck" | "shoulders" | "none";
-export type SkinFirmness = "firm" | "normal" | "sagging";
+export type PainArea = "knees" | "back" | "neck" | "shoulders" | "hips" | "none";
+export type SkinFirmness = "firm" | "moderate" | "sagging";
 
 export interface QuizAnswers {
     name: string;
