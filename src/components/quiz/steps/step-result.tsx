@@ -4,21 +4,32 @@ import React, { useEffect, useState } from "react";
 import { StepCard } from "../step-card";
 import { useQuiz } from "@/lib/quiz-context";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { Loader2, ArrowRight } from "lucide-react";
-import { BMIChart } from "../bmi-chart";
-import { SalesPage } from "@/components/sales/sales-page";
+import { Loader2, ArrowRight, Activity, AlertTriangle } from "lucide-react";
+
+import dynamic from "next/dynamic";
+
+const SalesPage = dynamic(() => import("@/components/sales/sales-page").then(mod => mod.SalesPage), {
+    loading: () => <div className="h-screen w-full flex items-center justify-center bg-white"><Loader2 className="w-10 h-10 animate-spin text-primary" /></div>
+});
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function StepResult() {
     const { calculateBiologicalAge, answers } = useQuiz();
     const [loading, setLoading] = useState(true);
-    const [result, setResult] = useState<{ bioAge: number; chronologicalAge: number; bmi: number } | null>(null);
+    const [result, setResult] = useState<{ bioAge: number; chronologicalAge: number; bmi: number; ageDiff: number } | null>(null);
     const [showSales, setShowSales] = useState(false);
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            setResult(calculateBiologicalAge());
-            setLoading(false);
+            try {
+                const res = calculateBiologicalAge();
+                setResult(res);
+            } catch (error) {
+                console.error("Error calculating age:", error);
+            } finally {
+                setLoading(false);
+            }
         }, 2500);
 
         return () => clearTimeout(timer);
@@ -41,80 +52,118 @@ export function StepResult() {
         );
     }
 
-    if (!result) return null;
+    if (!result) {
+        return (
+            <StepCard title="Erro ao calcular">
+                <div className="text-center space-y-4">
+                    <p>Ocorreu um erro ao processar seus dados.</p>
+                    <Button onClick={() => window.location.reload()}>Tentar Novamente</Button>
+                </div>
+            </StepCard>
+        );
+    }
 
     if (showSales) {
         return <SalesPage bioAge={result.bioAge} />;
     }
 
-    const ageDifference = result.bioAge - result.chronologicalAge;
-    const isOlder = result.bioAge > result.chronologicalAge;
+    const symptomCauses: Record<string, string> = {
+        "hot_flashes": "Indica desequilíbrio hormonal",
+        "insomnia": "Sinal de cortisol elevado",
+        "fatigue": "Metabolismo desacelerado",
+        "mood_swings": "Flutuação hormonal acelerada"
+    };
+
+    const selectedSymptoms = (answers.symptoms || []).filter(s => symptomCauses[s]);
 
     return (
-        <StepCard title={<span className="text-primary uppercase tracking-widest text-sm font-bold">Seu perfil está pronto!</span>}>
-            <div className="space-y-10">
+        <div className="w-full max-w-2xl mx-auto space-y-6">
 
-                {/* Age Comparison Section */}
-                <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-100 shadow-sm">
-                    <h3 className="text-center text-xl font-bold text-zinc-800 mb-6">Comparativo de Idade</h3>
-                    <div className="flex items-center justify-between gap-4">
-                        {/* Chronological Age */}
-                        <div className="flex-1 flex flex-col items-center space-y-2">
-                            <span className="text-sm font-medium text-zinc-500 uppercase tracking-wide">Idade Real</span>
-                            <div className="w-24 h-24 rounded-full border-4 border-zinc-200 flex items-center justify-center bg-white shadow-sm">
-                                <span className="text-3xl font-bold text-zinc-700">{result.chronologicalAge}</span>
-                            </div>
-                        </div>
-
-                        {/* Arrow/Difference */}
-                        <div className="flex flex-col items-center">
-                            <div className="h-px w-12 bg-zinc-300 mb-2"></div>
-                            <span className={`text-xs font-bold px-3 py-1 rounded-full ${isOlder ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'}`}>
-                                {isOlder ? `+${ageDifference} anos` : `${ageDifference} anos`}
-                            </span>
-                        </div>
-
-                        {/* Biological Age */}
-                        <div className="flex-1 flex flex-col items-center space-y-2">
-                            <span className="text-sm font-medium text-zinc-500 uppercase tracking-wide">Idade Biológica</span>
-                            <div className={`w-24 h-24 rounded-full border-4 flex items-center justify-center bg-white shadow-md relative overflow-hidden ${isOlder ? 'border-red-500' : 'border-emerald-500'}`}>
-                                <span className={`text-3xl font-bold ${isOlder ? 'text-red-600' : 'text-emerald-600'}`}>{result.bioAge}</span>
-                                {isOlder && <div className="absolute inset-0 bg-red-500/10 animate-pulse"></div>}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="mt-6 text-center">
-                        <p className="text-sm text-zinc-600 leading-relaxed">
-                            {isOlder
-                                ? <span>Seu corpo está envelhecendo <span className="font-bold text-red-600">mais rápido</span> que o normal. Isso indica inflamação e desgaste metabólico.</span>
-                                : <span>Parabéns! Seu corpo está <span className="font-bold text-emerald-600">mais jovem</span> que sua idade real. Continue assim!</span>}
-                        </p>
-                    </div>
-                </div>
-
-                {/* BMI Chart Section */}
-                <div className="bg-white rounded-3xl p-2">
-                    <div className="bg-primary/5 rounded-xl p-4 mb-6 text-center">
-                        <span className="text-primary font-medium">Seu (IMC) Índice de Massa Corporal é: <span className="font-bold text-xl ml-2">{result.bmi}</span></span>
-                    </div>
-                    <BMIChart bmi={result.bmi} />
-                </div>
-
-                {/* CTA */}
-                <div className="pt-4">
-                    <Button
-                        className="w-full h-16 text-xl font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/50 transition-all bg-primary hover:bg-primary/90 animate-pulse"
-                        onClick={() => setShowSales(true)}
-                    >
-                        Ver Plano de Rejuvenescimento
-                        <ArrowRight className="ml-2 h-6 w-6" />
-                    </Button>
-                    <p className="text-xs text-center text-muted-foreground mt-4">
-                        Baseado em seus {answers.symptoms.length} sintomas e hábitos diários.
-                    </p>
-                </div>
+            {/* Urgency Banner */}
+            <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-start gap-3 text-red-800 text-sm font-medium shadow-sm">
+                <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                <p>A cada mês sem ação, sua idade biológica pode aumentar mais 0,5 anos.</p>
             </div>
-        </StepCard>
+
+            <Card className="border-none shadow-2xl bg-white/90 backdrop-blur-sm rounded-3xl overflow-hidden ring-1 ring-black/5">
+                <CardHeader className="text-center pb-2 pt-8 px-6">
+                    <CardTitle className="text-2xl md:text-3xl font-extrabold text-zinc-800 leading-tight uppercase">
+                        SEU PERFIL ESTÁ PRONTO, <span className="text-primary">{answers.name || "VISITANTE"}</span>!
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="px-6 pb-8 pt-4 space-y-8">
+
+                    {/* Age Comparison */}
+                    <div className="flex justify-center items-end gap-4 md:gap-8">
+                        <div className="flex flex-col items-center gap-2">
+                            <span className="text-sm font-semibold text-zinc-500 uppercase tracking-wider">Idade Real</span>
+                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-zinc-200 flex items-center justify-center bg-zinc-50">
+                                <span className="text-3xl md:text-4xl font-bold text-zinc-400">{result.chronologicalAge}</span>
+                            </div>
+                        </div>
+
+                        <div className="pb-8 md:pb-10">
+                            <ArrowRight className="w-8 h-8 text-zinc-300" />
+                        </div>
+
+                        <div className="flex flex-col items-center gap-2">
+                            <span className="text-sm font-semibold text-primary uppercase tracking-wider font-bold">Idade Biológica</span>
+                            <div className="w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-primary shadow-xl shadow-primary/20 flex items-center justify-center bg-white relative overflow-hidden">
+                                <div className="absolute inset-0 bg-primary/5 animate-pulse"></div>
+                                <span className="text-4xl md:text-5xl font-extrabold text-primary relative z-10">{result.bioAge}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Symptom Analysis Section */}
+                    {selectedSymptoms.length > 0 && (
+                        <div className="bg-zinc-50 rounded-2xl p-6 space-y-4 border border-zinc-100">
+                            <h3 className="font-bold text-zinc-800 text-lg flex items-center gap-2">
+                                <Activity className="w-5 h-5 text-primary" />
+                                Seus sintomas confirmam o diagnóstico:
+                            </h3>
+                            <div className="space-y-3">
+                                {selectedSymptoms.map(symptom => (
+                                    <div key={symptom} className="flex items-center justify-between bg-white p-3 rounded-lg border border-zinc-100 shadow-sm">
+                                        <span className="text-zinc-700 font-medium">
+                                            {symptom === "hot_flashes" && "Ondas de Calor"}
+                                            {symptom === "insomnia" && "Insônia"}
+                                            {symptom === "fatigue" && "Cansaço Extremo"}
+                                            {symptom === "mood_swings" && "Mudanças de Humor"}
+                                        </span>
+                                        <div className="flex items-center gap-2 text-sm text-red-500 font-semibold">
+                                            <ArrowRight className="w-4 h-4" />
+                                            {symptomCauses[symptom]}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <p className="text-sm text-zinc-500 text-center pt-2">
+                                Esses fatores estão acelerando seu envelhecimento em <span className="font-bold text-red-500">+{result.ageDiff} anos</span>.
+                            </p>
+                        </div>
+                    )}
+
+                    {/* BMI Section (Simplified) */}
+                    <div className="text-center space-y-2">
+                        <p className="text-zinc-600">
+                            Seu IMC calculado é <span className="font-bold text-zinc-900">{result.bmi}</span>
+                        </p>
+                        <div className="h-2 w-full bg-zinc-100 rounded-full overflow-hidden mt-2">
+                            <div className="h-full bg-gradient-to-r from-green-400 to-red-500 w-full opacity-50"></div>
+                        </div>
+                    </div>
+
+                    {/* CTA */}
+                    <Button
+                        onClick={() => setShowSales(true)}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white text-xl font-bold py-8 rounded-2xl shadow-lg shadow-green-600/20 animate-bounce-slow"
+                    >
+                        Ver Meu Plano de Rejuvenescimento
+                    </Button>
+
+                </CardContent>
+            </Card>
+        </div>
     );
 }

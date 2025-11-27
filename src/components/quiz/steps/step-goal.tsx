@@ -14,11 +14,33 @@ const options: { label: string; value: Goal; icon: string; imageSrc: string }[] 
 
 export function StepGoal() {
     const { setAnswer, nextStep, answers } = useQuiz();
+    const [showFeedback, setShowFeedback] = React.useState(false);
 
     const handleSelect = (value: Goal) => {
         setAnswer("goal", value);
-        setTimeout(nextStep, 300);
+        setShowFeedback(true);
+        setTimeout(() => {
+            nextStep();
+        }, 1500);
     };
+
+    if (showFeedback) {
+        return (
+            <StepCard title="Analisando sua resposta...">
+                <div className="flex flex-col items-center justify-center py-12 space-y-6 animate-in fade-in zoom-in duration-500">
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+                        <span className="text-4xl">✨</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-center text-zinc-800">
+                        Ótimo!
+                    </h3>
+                    <p className="text-lg text-center text-zinc-600 max-w-xs">
+                        Esse é exatamente o foco do plano que vamos criar para você.
+                    </p>
+                </div>
+            </StepCard>
+        );
+    }
 
     return (
         <StepCard title={<span>Qual é o seu principal <span className="text-primary font-bold">DESEJO</span> de transformação corporal?</span>}>

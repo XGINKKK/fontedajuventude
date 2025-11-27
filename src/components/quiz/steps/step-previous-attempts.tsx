@@ -21,7 +21,7 @@ export function StepPreviousAttempts() {
     };
 
     return (
-        <StepCard title={<span>O que você já tentou fazer para <span className="text-primary font-bold">RECUPERAR</span> seu corpo antes?</span>}>
+        <StepCard title={<span>Você já tentou algum desses métodos <span className="text-primary font-bold">SEM sucesso duradouro</span>?</span>}>
             <div className="grid gap-4">
                 {options.map((option) => (
                     <SelectionCard

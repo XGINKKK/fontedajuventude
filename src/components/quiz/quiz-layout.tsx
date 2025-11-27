@@ -4,6 +4,8 @@ import React from "react";
 import { useQuiz } from "@/lib/quiz-context";
 import { motion, AnimatePresence } from "framer-motion";
 
+import Image from "next/image";
+
 export function QuizLayout({ children }: { children: React.ReactNode }) {
     const { step, totalSteps } = useQuiz();
     const progress = (step / totalSteps) * 100;
@@ -12,7 +14,16 @@ export function QuizLayout({ children }: { children: React.ReactNode }) {
         <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30 flex flex-col items-center py-10 px-4 font-sans">
             {/* Logo & Progress Section */}
             <div className="w-full max-w-lg mb-10 space-y-6 flex flex-col items-center">
-                <img src="/logo.png" alt="Pilates Asiático Logo" className="h-48 w-auto object-contain" />
+                <div className="relative h-48 w-full max-w-[300px]">
+                    <Image
+                        src="/logo.png"
+                        alt="Pilates Asiático Logo"
+                        fill
+                        className="object-contain"
+                        priority
+                        sizes="(max-width: 768px) 80vw, 300px"
+                    />
+                </div>
 
                 <div className="w-full space-y-3">
                     <div className="flex justify-between text-sm font-semibold text-muted-foreground tracking-wide uppercase">

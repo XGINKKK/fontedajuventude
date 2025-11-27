@@ -6,14 +6,23 @@ import { Button } from "@/components/ui/button";
 import { useQuiz } from "@/lib/quiz-context";
 import { ArrowRight } from "lucide-react";
 
+import Image from "next/image";
+
 export function StepWelcome() {
     const { nextStep } = useQuiz();
 
     return (
         <div className="w-full max-w-md mx-auto relative mt-12">
             <div className="absolute left-1/2 -translate-x-1/2 -top-16 z-10">
-                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-2xl">
-                    <img src="/images/trainer.png" alt="Ellen Nakamura" className="w-full h-full object-cover" />
+                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-2xl relative">
+                    <Image
+                        src="/images/trainer.png"
+                        alt="Ellen Nakamura"
+                        fill
+                        className="object-cover"
+                        priority
+                        sizes="(max-width: 768px) 128px, 128px"
+                    />
                 </div>
             </div>
 
@@ -40,7 +49,7 @@ export function StepWelcome() {
                     </Button>
 
                     <p className="mt-4 text-xs text-zinc-400">
-                        Levará menos de 2 minutos.
+                        Levará menos de 3 minutos.
                     </p>
                 </CardContent>
             </Card>

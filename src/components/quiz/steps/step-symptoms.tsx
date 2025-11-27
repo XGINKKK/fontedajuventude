@@ -15,6 +15,7 @@ const options: { label: string; value: Symptom; icon: string }[] = [
 
 export function StepSymptoms() {
     const { answers, setAnswer, nextStep } = useQuiz();
+    const [showFeedback, setShowFeedback] = React.useState(false);
 
     const toggleSymptom = (value: Symptom) => {
         const current = answers.symptoms;
@@ -24,6 +25,31 @@ export function StepSymptoms() {
             setAnswer("symptoms", [...current, value]);
         }
     };
+
+    const handleNext = () => {
+        setShowFeedback(true);
+        setTimeout(() => {
+            nextStep();
+        }, 1500);
+    };
+
+    if (showFeedback) {
+        return (
+            <StepCard title="Processando sintomas...">
+                <div className="flex flex-col items-center justify-center py-12 space-y-6 animate-in fade-in zoom-in duration-500">
+                    <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-4xl">📊</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-center text-zinc-800">
+                        Entendido.
+                    </h3>
+                    <p className="text-lg text-center text-zinc-600 max-w-xs">
+                        Vamos analisar como esses sintomas estão afetando sua idade biológica.
+                    </p>
+                </div>
+            </StepCard>
+        );
+    }
 
     return (
         <StepCard title={<span>Quais destes <span className="text-primary font-bold">SINAIS</span> de desgaste corporal você sente com mais frequência?</span>}>
@@ -47,7 +73,7 @@ export function StepSymptoms() {
             </div>
             <Button
                 className="w-full h-14 text-lg font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all"
-                onClick={nextStep}
+                onClick={handleNext}
                 disabled={answers.symptoms.length === 0}
             >
                 Continuar
