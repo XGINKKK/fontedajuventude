@@ -10,6 +10,10 @@ export type PreviousAttempts = "gym" | "diet" | "pills" | "none";
 export type TimeAvailability = "5-10" | "15-30" | "30+";
 export type ProblemArea = "belly" | "arms" | "legs" | "face";
 export type Commitment = "yes" | "maybe" | "no";
+export type ExerciseFreq = "0" | "1-2" | "3-4" | "5+";
+export type Metabolism = "slow" | "normal" | "fast";
+export type PainArea = "knees" | "back" | "neck" | "shoulders" | "none";
+export type SkinFirmness = "firm" | "normal" | "sagging";
 
 export interface QuizAnswers {
     name: string;
@@ -26,10 +30,10 @@ export interface QuizAnswers {
     commitment: Commitment | null;
 
     // Deprecated/Removed from flow but kept for type safety if needed temporarily
-    skinFirmness?: any;
-    exerciseFreq?: any;
-    painAreas?: any;
-    metabolism?: any;
+    skinFirmness?: SkinFirmness;
+    exerciseFreq?: ExerciseFreq;
+    painAreas?: PainArea[];
+    metabolism?: Metabolism;
 }
 
 interface QuizContextType {
