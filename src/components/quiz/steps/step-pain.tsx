@@ -18,7 +18,7 @@ export function StepPain() {
     const { answers, setAnswer, nextStep } = useQuiz();
 
     const togglePain = (value: PainArea) => {
-        const current = answers.painAreas;
+        const current = answers.painAreas || [];
 
         if (value === "none") {
             // If "none" is selected, clear others or toggle off
@@ -45,7 +45,7 @@ export function StepPain() {
         <StepCard title={<span>Quais áreas do seu corpo precisam de um cuidado especial devido a <span className="text-primary font-bold">SENSIBILIDADE</span> ou dor?</span>}>
             <div className="grid gap-4 mb-8">
                 {options.map((option) => {
-                    const isSelected = answers.painAreas.includes(option.value);
+                    const isSelected = (answers.painAreas || []).includes(option.value);
                     return (
                         <SelectionCard
                             key={option.value}
@@ -62,7 +62,7 @@ export function StepPain() {
             <Button
                 className="w-full h-14 text-lg font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all"
                 onClick={nextStep}
-                disabled={answers.painAreas.length === 0}
+                disabled={(answers.painAreas || []).length === 0}
             >
                 Continuar
             </Button>
