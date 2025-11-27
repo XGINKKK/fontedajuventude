@@ -14,7 +14,7 @@ export async function saveLead(answers: QuizAnswers): Promise<{ id: string } | n
 
         const { data: lead, error: leadError } = await supabase
             .from('leads')
-            .insert(leadData)
+            .insert(leadData as any)
             .select()
             .single()
 
@@ -35,7 +35,7 @@ export async function saveLead(answers: QuizAnswers): Promise<{ id: string } | n
                 altura_cm: parseFloat(answers.height.replace(',', '.')),
                 peso_kg: parseFloat(answers.weight.replace(',', '.')),
                 pergunta_compromisso: answers.commitment
-            })
+            } as any)
 
         if (answersError) throw answersError
 
@@ -57,7 +57,7 @@ export async function saveLead(answers: QuizAnswers): Promise<{ id: string } | n
             step_9_em: now,
             step_10_em: now,
             step_11_em: now,
-        })
+        } as any)
 
         return lead as { id: string }
     } catch (error) {
@@ -78,7 +78,7 @@ export async function saveQuizResult(leadId: string, result: any) {
                 idade_biologica: result.bioAge,
                 diferenca_idade: result.ageDiff,
                 quantidade_sintomas: 0 // Precisaria passar isso no result
-            })
+            } as any)
 
         if (error) throw error
 
@@ -88,7 +88,7 @@ export async function saveQuizResult(leadId: string, result: any) {
             .update({
                 resultado_em: new Date().toISOString(),
                 etapa_atual: 'resultado'
-            })
+            } as any)
             .eq('lead_id', leadId)
 
         return true
