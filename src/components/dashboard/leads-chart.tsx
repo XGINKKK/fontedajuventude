@@ -38,11 +38,13 @@ export function LeadsChart({
 
         try {
             // Buscar dados por dia
-            const { data: leadsPorDia } = await supabase
+            const { data } = await supabase
                 .from('leads_por_dia')
                 .select('*')
                 .gte('dia', startDate.toISOString().split('T')[0])
                 .order('dia', { ascending: true })
+
+            const leadsPorDia = data as any[]
 
             if (leadsPorDia) {
                 const chartData: DailyData[] = []
@@ -94,8 +96,8 @@ export function LeadsChart({
                             key={p}
                             onClick={() => setChartPeriod(p)}
                             className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${chartPeriod === p
-                                    ? 'bg-emerald-500 text-white'
-                                    : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+                                ? 'bg-emerald-500 text-white'
+                                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
                                 }`}
                         >
                             {p === '7d' ? '7 dias' : p === '14d' ? '14 dias' : '30 dias'}
