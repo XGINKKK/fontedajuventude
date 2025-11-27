@@ -12,13 +12,15 @@ export async function saveLead(answers: QuizAnswers): Promise<{ id: string } | n
             dispositivo: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
         }
 
-        const { data: lead, error: leadError } = await supabase
+        const { data: leadRaw, error: leadError } = await supabase
             .from('leads')
             .insert(leadData as any)
             .select()
             .single()
 
         if (leadError) throw leadError
+
+        const lead = leadRaw as { id: string };
 
         // 2. Salvar Respostas do Quiz
         const { error: answersError } = await supabase
