@@ -6,9 +6,9 @@ import { useQuiz, SkinFirmness } from "@/lib/quiz-context";
 import { SelectionCard } from "../selection-card";
 
 const options: { label: string; value: SkinFirmness; description: string; imageSrc: string }[] = [
-    { label: "1 - Flacidez Visível", value: "sagging", description: "(Preocupante)", imageSrc: "/images/goal-fat-loss.png" },
-    { label: "2 - Moderada", value: "moderate", description: "(Precisa de Atenção)", imageSrc: "/images/goal-tone.png" },
-    { label: "3 - Firme", value: "firm", description: "(Satisfatória)", imageSrc: "/images/goal-posture.png" },
+    { label: "1 - Flacidez Visível", value: "sagging", description: "(Preocupante)", imageSrc: "/images/skin-sagging.png" },
+    { label: "2 - Moderada", value: "moderate", description: "(Precisa de Atenção)", imageSrc: "/images/skin-moderate.png" },
+    { label: "3 - Firme", value: "firm", description: "(Satisfatória)", imageSrc: "/images/skin-firm.png" },
 ];
 
 export function StepSkin() {

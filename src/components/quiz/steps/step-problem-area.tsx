@@ -6,10 +6,10 @@ import { useQuiz, ProblemArea } from "@/lib/quiz-context";
 import { SelectionCard } from "../selection-card";
 
 const options: { label: string; value: ProblemArea; imageSrc?: string }[] = [
-    { label: "Barriga / Pochete", value: "belly", imageSrc: "/images/goal-fat-loss.png" },
-    { label: "Braços (Tchauzinho)", value: "arms", imageSrc: "/images/goal-tone.png" },
-    { label: "Coxas e Culote", value: "legs", imageSrc: "/images/goal-posture.png" },
-    { label: "Rosto e Papada", value: "face", imageSrc: "/images/goal-energy.png" },
+    { label: "Barriga / Pochete", value: "belly", imageSrc: "/images/problem-belly.png" },
+    { label: "Braços (Tchauzinho)", value: "arms", imageSrc: "/images/problem-arms.png" },
+    { label: "Coxas e Culote", value: "legs", imageSrc: "/images/problem-legs.png" },
+    { label: "Rosto e Papada", value: "face", imageSrc: "/images/problem-face.png" },
 ];
 
 export function StepProblemArea() {
