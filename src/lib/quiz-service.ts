@@ -48,7 +48,7 @@ export async function saveLead(answers: QuizAnswers): Promise<{ id: string } | n
         await (supabase.from('funil_etapas') as any).insert({
             lead_id: lead.id,
             session_id: `session_${lead.id}`, // Identificador simples
-            etapa_atual: 'step_11', // Capture
+            etapa_atual: 'capture', // Capture
             step_1_em: now,
             step_2_em: now,
             step_3_em: now,

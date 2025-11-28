@@ -32,12 +32,12 @@ export function StepWelcome() {
                         Diagnóstico Gratuito
                     </div>
                     <CardTitle className="text-3xl md:text-4xl font-extrabold text-zinc-800 leading-tight">
-                        Descubra sua <span className="text-primary">Idade Biológica</span>
+                        Por que sua dieta parou de funcionar depois dos 40?
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="px-6 pb-8 pt-4 text-center">
                     <p className="text-zinc-600 mb-8 text-lg leading-relaxed">
-                        Responda a este breve diagnóstico para identificar o que está acelerando seu envelhecimento e receba um plano personalizado.
+                        Descubra se o seu Metabolismo entrou em <span className="text-primary font-bold">"Pausa Hormonal"</span> e receba um plano para destravá-lo.
                     </p>
 
                     <Button

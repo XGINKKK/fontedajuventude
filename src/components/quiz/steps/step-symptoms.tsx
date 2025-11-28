@@ -27,24 +27,35 @@ export function StepSymptoms() {
     };
 
     const handleNext = () => {
+        const hasFatigueOrInsomnia = answers.symptoms.includes("fatigue") || answers.symptoms.includes("insomnia");
+
         setShowFeedback(true);
         setTimeout(() => {
             nextStep();
-        }, 1500);
+        }, hasFatigueOrInsomnia ? 4000 : 1500);
     };
 
     if (showFeedback) {
+        const hasFatigueOrInsomnia = answers.symptoms.includes("fatigue") || answers.symptoms.includes("insomnia");
+
         return (
-            <StepCard title="Processando sintomas...">
-                <div className="flex flex-col items-center justify-center py-12 space-y-6 animate-in fade-in zoom-in duration-500">
+            <StepCard title="Analisando sintomas...">
+                <div className="flex flex-col items-center justify-center py-8 space-y-6 animate-in fade-in zoom-in duration-500">
                     <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-4xl">📊</span>
+                        <span className="text-4xl">🧬</span>
                     </div>
                     <h3 className="text-2xl font-bold text-center text-zinc-800">
-                        Entendido.
+                        {hasFatigueOrInsomnia ? "Não é \"coisa da idade\"" : "Entendido"}
                     </h3>
-                    <p className="text-lg text-center text-zinc-600 max-w-xs">
-                        Vamos analisar como esses sintomas estão afetando sua idade biológica.
+                    <p className="text-lg text-center text-zinc-600 max-w-sm leading-relaxed">
+                        {hasFatigueOrInsomnia ? (
+                            <>
+                                Muitas mulheres acham que esse cansaço é normal. <span className="font-bold text-red-500">Não é.</span><br /><br />
+                                É seu corpo gritando que suas <span className="font-semibold text-primary">mitocôndrias</span> (usinas de energia) estão bloqueadas. Vamos reativá-las.
+                            </>
+                        ) : (
+                            "Vamos analisar como esses sintomas estão afetando sua idade biológica e criar um plano para revertê-los."
+                        )}
                     </p>
                 </div>
             </StepCard>

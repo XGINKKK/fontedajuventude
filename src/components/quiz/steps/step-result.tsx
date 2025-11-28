@@ -22,22 +22,30 @@ export function StepResult() {
     const [showSales, setShowSales] = useState(false);
 
     useEffect(() => {
-        const timer = setTimeout(async () => {
-            try {
-                const res = calculateBiologicalAge();
-                setResult(res);
+        // 1. Calcular resultado imediatamente
+        let res: any = null;
+        try {
+            res = calculateBiologicalAge();
+            setResult(res);
+        } catch (error) {
+            console.error("Error calculating age:", error);
+            setLoading(false);
+            return;
+        }
 
-                // Salvar resultado no Supabase se tivermos um leadId
-                const leadId = localStorage.getItem("currentLeadId");
-                if (leadId && res) {
-                    await saveQuizResult(leadId, res);
-                }
-            } catch (error) {
-                console.error("Error calculating age:", error);
-            } finally {
-                setLoading(false);
+        // 2. Salvar no Supabase em background (sem bloquear a UI)
+        const saveToDb = async () => {
+            const leadId = localStorage.getItem("currentLeadId");
+            if (leadId && res) {
+                await saveQuizResult(leadId, res);
             }
-        }, 2500);
+        };
+        saveToDb();
+
+        // 3. Timer apenas para a experiência visual (reduzido para 1.5s)
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 1500);
 
         return () => clearTimeout(timer);
     }, [calculateBiologicalAge]);
@@ -123,30 +131,32 @@ export function StepResult() {
                     </div>
 
                     {/* Symptom Analysis Section */}
+                    {/* Symptom Analysis Section */}
                     {selectedSymptoms.length > 0 && (
                         <div className="bg-zinc-50 rounded-2xl p-6 space-y-4 border border-zinc-100">
                             <h3 className="font-bold text-zinc-800 text-lg flex items-center gap-2">
                                 <Activity className="w-5 h-5 text-primary" />
-                                Seus sintomas confirmam o diagnóstico:
+                                Seu Metabolismo não está "lento", ele está <span className="text-red-500 uppercase">BLOQUEADO</span>.
                             </h3>
-                            <div className="space-y-3">
-                                {selectedSymptoms.map(symptom => (
-                                    <div key={symptom} className="flex items-center justify-between bg-white p-3 rounded-lg border border-zinc-100 shadow-sm">
-                                        <span className="text-zinc-700 font-medium">
-                                            {symptom === "hot_flashes" && "Ondas de Calor"}
-                                            {symptom === "insomnia" && "Insônia"}
-                                            {symptom === "fatigue" && "Cansaço Extremo"}
-                                            {symptom === "mood_swings" && "Mudanças de Humor"}
-                                        </span>
-                                        <div className="flex items-center gap-2 text-sm text-red-500 font-semibold">
-                                            <ArrowRight className="w-4 h-4" />
-                                            {symptomCauses[symptom]}
-                                        </div>
-                                    </div>
-                                ))}
+
+                            <p className="text-zinc-600 leading-relaxed">
+                                Sua Idade Biológica de <span className="font-bold text-zinc-900">{result.bioAge} anos</span> mostra um corpo em resistência.
+                            </p>
+
+                            <div className="bg-white p-4 rounded-xl border border-zinc-200 shadow-sm space-y-3">
+                                <p className="text-zinc-700 font-medium">
+                                    Você notou que a gordura mudou? Que ela foi para a barriga e costas?
+                                </p>
+                                <p className="text-zinc-600 text-sm">
+                                    Isso é o <span className="font-bold text-primary">"Escudo de Cortisol"</span>. Seu corpo está tentando se proteger das mudanças hormonais acumulando energia.
+                                </p>
+                                <p className="text-zinc-600 text-sm italic border-l-2 border-primary pl-3">
+                                    "Fazer dieta agora é como tentar tirar dinheiro de um banco em crise: ele vai travar o cofre."
+                                </p>
                             </div>
+
                             <p className="text-sm text-zinc-500 text-center pt-2">
-                                Esses fatores estão acelerando seu envelhecimento em <span className="font-bold text-red-500">+{result.ageDiff} anos</span>.
+                                O <span className="font-bold text-primary">Método Asiático</span> não "ataca" a gordura. Ele convence seu corpo de que é seguro liberá-la.
                             </p>
                         </div>
                     )}

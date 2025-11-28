@@ -42,12 +42,18 @@ export function SalesPage({ bioAge }: SalesPageProps) {
                     {/* Headlines */}
                     <div className="space-y-4">
                         <h1 className="text-3xl md:text-5xl font-extrabold text-[#E91E63] leading-tight">
-                            SEU DIAGNÓSTICO NÃO MENTE: <br />
-                            <span className="text-zinc-900">Sua Idade Biológica é de {bioAge} anos.</span>
+                            PARA A MULHER QUE SE OLHA NO ESPELHO E SENTE FALTA DA PRÓPRIA CINTURA...
                         </h1>
                         <p className="text-lg md:text-xl text-zinc-600 font-medium">
-                            O MÉTODO ORIENTAL DE 9 MINUTOS QUE REATIVA O CORPO FEMININO E REVERTE O RELÓGIO BIOLÓGICO MESMO APÓS OS 40!
+                            Como Reativar o <span className="font-bold text-zinc-900">"Hormônio da Juventude"</span> e Derreter a Gordura da Menopausa em 9 Minutos/Dia (Sem Dietas de Fome)
                         </p>
+
+                        {/* Identification Block */}
+                        <div className="bg-white p-4 rounded-xl border-l-4 border-[#E91E63] text-left shadow-sm my-6">
+                            <p className="text-zinc-700 italic">
+                                "Você sente que seu corpo foi 'sequestrado'? Que não importa o quanto você coma pouco, a balança não mexe? <span className="font-bold">Você não está louca. E você não está sozinha.</span>"
+                            </p>
+                        </div>
                     </div>
 
                     {/* Before/After Hero Section (Interactive Slider) */}

@@ -34,18 +34,20 @@ export function StepCapture() {
         if (name && whatsapp.length >= 14) {
             setIsSubmitting(true);
 
-            // Atualizar contexto primeiro para ter os dados completos
+            // Atualizar contexto
             setAnswer("name", name);
             setAnswer("whatsapp", whatsapp);
 
-            // Preparar objeto de respostas completo
+            // Preparar dados e salvar em background
             const fullAnswers = { ...answers, name, whatsapp };
 
-            // Salvar no Supabase
-            const lead = await saveLead(fullAnswers);
-
-            if (lead) {
-                localStorage.setItem("currentLeadId", lead.id);
+            try {
+                const lead = await saveLead(fullAnswers);
+                if (lead) {
+                    localStorage.setItem("currentLeadId", lead.id);
+                }
+            } catch (error) {
+                console.error("Erro ao salvar lead:", error);
             }
 
             nextStep();
